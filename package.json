@@ -1,0 +1,42 @@
+{
+  "name": "twitch-e7-draft",
+  "description": "e7 draft bot for twitch chat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/endqwerty/twitch-e7-draft.git"
+  },
+  "author": "Daniel Yang",
+  "license": "LICENSE",
+  "bugs": {
+    "url": "https://github.com/endqwerty/twitch-e7-draft/issues"
+  },
+  "homepage": "https://github.com/endqwerty/twitch-e7-draft#readme",
+  "dependencies": {
+    "twitch-auth": "^4.5.5",
+    "twitch-chat-client": "^4.5.5",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.24.0",
+    "@typescript-eslint/parser": "^4.24.0",
+    "eslint": "^7.27.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.js": "eslint --cache --fix"
+  }
+}
