@@ -19,15 +19,15 @@ const state = Date.now();
 async function getAuthProvider(
   clientId: string,
   tokenData: {
-    accessToken: string;
-    refreshToken: string;
-    expiryTimestamp: Date;
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
   },
 ): Promise<AuthProvider> {
-  const auth = new RefreshableAuthProvider(new StaticAuthProvider(clientId, tokenData.accessToken), {
+  const auth = new RefreshableAuthProvider(new StaticAuthProvider(clientId, tokenData.access_token), {
     clientSecret,
-    refreshToken: tokenData.refreshToken,
-    expiry: tokenData.expiryTimestamp === null ? null : new Date(tokenData.expiryTimestamp),
+    refreshToken: tokenData.refresh_token,
+    expiry: tokenData.expires_in === null ? null : new Date(Date.now() + tokenData.expires_in),
     // onRefresh: async ({ accessToken, refreshToken, expiryDate }) => {
     //   const newTokenData = {
     //     accessToken,
@@ -46,15 +46,46 @@ async function getAuthProvider(
   return auth;
 }
 
-async function createClient(chatClient: ChatClient) {
+const draft: Map<string, number> = new Map();
+const users: Map<string, boolean> = new Map();
+
+async function createDrafterClient(chatClient: ChatClient) {
   await chatClient.connect();
   chatClient.onMessage((channel, user, message) => {
-    // TODO: check if user has already voted
-    if (message.startsWith('!pick')) {
-      const pick = message.slice(5).trim();
-      chatClient.say(channel, pick);
+    if (channel == `#${user}`) {
+      if (message == '!startDraft') {
+        startDraft(chatClient);
+      } else if (message == '!endDraft') {
+        endDraft(chatClient);
+      }
     }
   });
+}
+async function startDraft(chatClient: ChatClient) {
+  chatClient.say(channel, 'Starting Draft');
+
+  chatClient.onMessage((channel, user, message) => {
+    if (message.startsWith('!pick')) {
+      if (!users.has(user)) {
+        const pick = message.slice(5).trim();
+        chatClient.say(channel, pick);
+
+        draft.set(pick, draft.get(pick) || 0 + 1);
+
+        // TODO: parse for which hero (check synonymns)
+        users.set(user, true);
+      } else {
+        console.log('user already picked');
+      }
+    }
+  });
+}
+async function endDraft(chatClient: ChatClient) {
+  chatClient.say(channel, 'Draft Ended');
+  console.log(draft.toString());
+  console.log(users.toString());
+  draft.clear();
+  users.clear();
 }
 async function main(code: string) {
   const response = await fetch(
@@ -64,7 +95,7 @@ async function main(code: string) {
   const tokenData = await response.json();
   const authProvider = await getAuthProvider(clientId, tokenData);
   const chatClient = new ChatClient(authProvider, { channels: [channel] });
-  createClient(chatClient);
+  createDrafterClient(chatClient);
 }
 app.get('/', function (req: express.Request, res: express.Response) {
   console.log(req.query.code);
