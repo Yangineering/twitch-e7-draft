@@ -12,6 +12,7 @@ const clientSecret = `${process.env.clientSecret}`;
 const clientId = `${process.env.clientId}`;
 const channel = `${process.env.channel}`;
 const redirectURI = `${process.env.redirectURI}`;
+const port = process.env.port || 3000;
 
 const app = express();
 const state = Date.now();
@@ -97,7 +98,7 @@ async function main(code: string) {
   const chatClient = new ChatClient(authProvider, { channels: [channel] });
   createDrafterClient(chatClient);
 }
-app.get('/', function (req: express.Request, res: express.Response) {
+app.get('/auth', function (req: express.Request, res: express.Response) {
   console.log(req.query.code);
   if (parseInt(`${req.query.state}`) == state) {
     res.send('e7_bot has received authentication');
@@ -106,9 +107,9 @@ app.get('/', function (req: express.Request, res: express.Response) {
     res.send('State does not match! Potential security vulnerability detected.');
   }
 });
-app.listen(3000);
-open(
-  `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURI(
-    redirectURI,
-  )}&response_type=code&scope=chat:read+chat:edit&force_verify=true&state=${state}`,
-);
+app.get('/start', function (req: express.Request, res: express.Response) {
+  res.redirect(
+    `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${req.protocol}://${req.hostname}/auth&response_type=code&scope=chat:read+chat:edit&force_verify=true&state=${state}`,
+  );
+});
+app.listen(port);
