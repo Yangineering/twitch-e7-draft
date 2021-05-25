@@ -1,10 +1,9 @@
 import { ChatClient } from 'twitch-chat-client';
 import { StaticAuthProvider, RefreshableAuthProvider, AuthProvider } from 'twitch-auth';
 import dotenv from 'dotenv';
-// import { promises as fs } from "fs";
 import express from 'express';
-import open from 'open';
 import fetch from 'node-fetch';
+import util from 'util';
 
 dotenv.config();
 
@@ -72,21 +71,26 @@ async function startDraft(chatClient: ChatClient) {
         chatClient.say(channel, pick);
 
         draft.set(pick, draft.get(pick) || 0 + 1);
-
-        // TODO: parse for which hero (check synonymns)
         users.set(user, true);
+
+        chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
+        chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
       } else {
         console.log('user already picked');
+        chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
+        chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
       }
     }
   });
 }
 async function endDraft(chatClient: ChatClient) {
-  chatClient.say(channel, 'Draft Ended');
+  chatClient.say(channel, 'Draft Ended. Clearing draft and users');
   console.log(draft.toString());
   console.log(users.toString());
   draft.clear();
   users.clear();
+  chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
+  chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
 }
 async function main(code: string) {
   const response = await fetch(
