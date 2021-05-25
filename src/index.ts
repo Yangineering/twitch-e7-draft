@@ -55,8 +55,12 @@ async function createDrafterClient(chatClient: ChatClient) {
     if (channel == `#${user}`) {
       if (message == '!startDraft') {
         startDraft(chatClient);
-      } else if (message == '!endDraft') {
+        setTimeout(() => {
+          endDraft(chatClient);
+        }, 30000);
+      } else if (message == '!endDraft' || message == '!next') {
         endDraft(chatClient);
+        clearTimeout();
       }
     }
   });
@@ -84,7 +88,9 @@ async function startDraft(chatClient: ChatClient) {
   });
 }
 async function endDraft(chatClient: ChatClient) {
+  const winner = [...draft.entries()].reduce((previous, current) => (current[1] > previous[1] ? current : previous));
   await chatClient.say(channel, 'Draft Ended. Clearing draft and users');
+  await chatClient.say(channel, `The winner is ${winner[0]} with ${winner[1]} votes!`);
   draft.clear();
   users.clear();
   await chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
