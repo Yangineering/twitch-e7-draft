@@ -12,7 +12,7 @@ const clientSecret = `${process.env.clientSecret}`;
 const clientId = `${process.env.clientId}`;
 const channel = `${process.env.channel}`;
 const redirectURI = `${process.env.redirectURI}`;
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 
 const app = express();
 const state = Date.now();
