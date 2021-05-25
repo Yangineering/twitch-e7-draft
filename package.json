@@ -9,6 +9,10 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "prepare": "husky install"
   },
+  "engines": {
+    "node": "16.x",
+    "npm": "7.x"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/endqwerty/twitch-e7-draft.git"
