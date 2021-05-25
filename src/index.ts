@@ -118,7 +118,7 @@ app.get('/auth', function (req: express.Request, res: express.Response) {
 
 app.get('/start', function (req: express.Request, res: express.Response) {
   res.redirect(
-    `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${req.protocol}://${req.hostname}/auth&response_type=code&scope=chat:read+chat:edit&force_verify=true&state=${state}`,
+    `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=https://${req.hostname}/auth&response_type=code&scope=chat:read+chat:edit&force_verify=true&state=${state}`,
   );
 });
 app.listen(port);
