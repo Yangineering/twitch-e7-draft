@@ -62,35 +62,33 @@ async function createDrafterClient(chatClient: ChatClient) {
   });
 }
 async function startDraft(chatClient: ChatClient) {
-  chatClient.say(channel, 'Starting Draft');
+  await chatClient.say(channel, 'Starting Draft');
 
-  chatClient.onMessage((channel, user, message) => {
+  chatClient.onMessage(async (channel, user, message) => {
     if (message.startsWith('!pick')) {
       if (!users.has(user)) {
         const pick = message.slice(5).trim();
-        chatClient.say(channel, pick);
+        await chatClient.say(channel, pick);
 
         draft.set(pick, draft.get(pick) || 0 + 1);
         users.set(user, true);
 
-        chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
-        chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
+        await chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
+        await chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
       } else {
-        chatClient.say(channel, `${user} has already picked`);
-        chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
-        chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
+        await chatClient.say(channel, `${user} has already picked`);
+        await chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
+        await chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
       }
     }
   });
 }
 async function endDraft(chatClient: ChatClient) {
-  chatClient.say(channel, 'Draft Ended. Clearing draft and users');
-  console.log(draft.toString());
-  console.log(users.toString());
+  await chatClient.say(channel, 'Draft Ended. Clearing draft and users');
   draft.clear();
   users.clear();
-  chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
-  chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
+  await chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
+  await chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
 }
 async function main(code: string) {
   const response = await fetch(
@@ -102,8 +100,8 @@ async function main(code: string) {
   const chatClient = new ChatClient(authProvider, { channels: [channel] });
   createDrafterClient(chatClient);
 }
+
 app.get('/auth', function (req: express.Request, res: express.Response) {
-  console.log(req.query.code);
   if (parseInt(`${req.query.state}`) == state) {
     res.send('e7_bot has received authentication');
     main(`${req.query.code}`);
@@ -111,6 +109,7 @@ app.get('/auth', function (req: express.Request, res: express.Response) {
     res.send('State does not match! Potential security vulnerability detected.');
   }
 });
+
 app.get('/start', function (req: express.Request, res: express.Response) {
   res.redirect(
     `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${req.protocol}://${req.hostname}/auth&response_type=code&scope=chat:read+chat:edit&force_verify=true&state=${state}`,
