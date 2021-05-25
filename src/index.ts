@@ -76,7 +76,7 @@ async function startDraft(chatClient: ChatClient) {
         chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
         chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
       } else {
-        console.log('user already picked');
+        chatClient.say(channel, `${user} has already picked`);
         chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
         chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
       }
