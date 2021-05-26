@@ -5,9 +5,15 @@ beforeAll(async () => {
   await nameChecker.updateHeroList();
 });
 
-test('check angelica', () => {
+test('check existing', () => {
   expect(nameChecker.checkCanonicalName('angelica')).toContain('angelica');
 });
-test('check arby', () => {
+test('check not existing', () => {
   expect(nameChecker.checkCanonicalName('arby')).toBe('');
+});
+test('check caps', () => {
+  expect(nameChecker.checkCanonicalName('Angelica')).toBe('');
+});
+test('check symbols', () => {
+  expect(nameChecker.checkCanonicalName('singelica')).toBe('');
 });
