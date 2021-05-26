@@ -3,7 +3,7 @@ import { StaticAuthProvider, RefreshableAuthProvider, AuthProvider } from 'twitc
 import dotenv from 'dotenv';
 import express from 'express';
 import fetch from 'node-fetch';
-import NameChecker from './NameCheker';
+import NameChecker from './NameChecker';
 
 dotenv.config();
 
@@ -81,7 +81,7 @@ async function createDrafterClient(chatClient: ChatClient, rtaClient: ChatClient
 async function startPicks(chatClient: ChatClient) {
   await chatClient.say(channel, 'Picks OPEN');
 
-  chatClient.onMessage(async (channel, user, message) => {
+  chatClient.onMessage(async (channel: string, user: string, message: string) => {
     if (message.startsWith('!pick')) {
       if (!users.has(user)) {
         const pick = message.slice(5).trim();
