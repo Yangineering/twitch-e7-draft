@@ -105,6 +105,7 @@ async function clearPicks(chatClient: ChatClient) {
   users.clear();
 }
 async function main(code: string) {
+  await nameChecker.updateHeroList();
   const response = await fetch(
     `https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${code}&grant_type=authorization_code&redirect_uri=${redirectURI}`,
     { method: 'POST' },
