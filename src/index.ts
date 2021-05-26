@@ -57,18 +57,22 @@ async function createDrafterClient(chatClient: ChatClient, rtaClient: ChatClient
     if (channel == `#${user}`) {
       switch (message) {
         case '!startRTA':
-          if (!rtaClient.isConnected) await rtaClient.connect();
+          if (!rtaClient.isConnected) {
+            await rtaClient.connect();
+          }
           await rtaClient.say(channel, 'e7-RTA-Client: connected');
           break;
         case '!reset':
           await rtaClient.say(channel, 'e7-RTA-Client: quitting');
-          if (rtaClient.isConnected) await rtaClient.quit();
+          if (rtaClient.isConnected) {
+            await rtaClient.quit();
+          }
           break;
         case '!startDraft':
           await rtaClient.say(channel, 'Type !pick to select a unit');
           await startPicks(rtaClient);
           break;
-        case '!next':
+        case '!npick':
           await clearPicks(rtaClient);
           break;
         case '!endDraft':
