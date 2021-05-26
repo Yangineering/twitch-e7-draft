@@ -53,26 +53,26 @@ const users: Map<string, boolean> = new Map();
 async function createDrafterClient(chatClient: ChatClient, rtaClient: ChatClient) {
   await chatClient.connect();
   await rtaClient.connect();
-  chatClient.onMessage((channel, user, message) => {
+  chatClient.onMessage(async (channel, user, message) => {
     if (channel == `#${user}`) {
       switch (message) {
         case '!startRTA':
-          rtaClient.connect();
-          rtaClient.say(channel, 'e7-RTA-Client: connected');
+          if (!rtaClient.isConnected) await rtaClient.connect();
+          await rtaClient.say(channel, 'e7-RTA-Client: connected');
           break;
         case '!reset':
-          rtaClient.say(channel, 'e7-RTA-Client: quitting');
-          rtaClient.quit();
+          await rtaClient.say(channel, 'e7-RTA-Client: quitting');
+          if (rtaClient.isConnected) await rtaClient.quit();
           break;
         case '!startDraft':
-          rtaClient.say(channel, 'Type !pick to select a unit');
-          startPicks(rtaClient);
+          await rtaClient.say(channel, 'Type !pick to select a unit');
+          await startPicks(rtaClient);
           break;
         case '!next':
-          clearPicks(rtaClient);
+          await clearPicks(rtaClient);
           break;
         case '!endDraft':
-          clearPicks(rtaClient);
+          await clearPicks(rtaClient);
           break;
       }
     }
