@@ -81,7 +81,7 @@ async function createDrafterClient(chatClient: ChatClient, rtaClient: ChatClient
 async function startPicks(chatClient: ChatClient) {
   await chatClient.say(channel, 'Picks OPEN');
 
-  chatClient.onMessage(async (channel: string, user: string, message: string) => {
+  chatClient.onMessage(async (channel, user, message) => {
     if (message.startsWith('!pick')) {
       if (!users.has(user)) {
         const pick = message.slice(5).trim();
