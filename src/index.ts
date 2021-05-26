@@ -3,7 +3,7 @@ import { StaticAuthProvider, RefreshableAuthProvider, AuthProvider } from 'twitc
 import dotenv from 'dotenv';
 import express from 'express';
 import fetch from 'node-fetch';
-import util from 'util';
+import NameChecker from './NameCheker';
 
 dotenv.config();
 
@@ -15,6 +15,7 @@ const port = process.env.PORT || 3000;
 
 const app = express();
 const state = Date.now();
+const nameChecker = new NameChecker();
 
 async function getAuthProvider(
   clientId: string,
@@ -49,52 +50,59 @@ async function getAuthProvider(
 const draft: Map<string, number> = new Map();
 const users: Map<string, boolean> = new Map();
 
-async function createDrafterClient(chatClient: ChatClient) {
+async function createDrafterClient(chatClient: ChatClient, rtaClient: ChatClient) {
   await chatClient.connect();
+  await rtaClient.connect();
   chatClient.onMessage((channel, user, message) => {
     if (channel == `#${user}`) {
-      if (message == '!startDraft') {
-        startDraft(chatClient);
-        setTimeout(() => {
-          endDraft(chatClient);
-        }, 30000);
-      } else if (message == '!endDraft' || message == '!next') {
-        endDraft(chatClient);
-        clearTimeout();
+      switch (message) {
+        case '!startRTA':
+          rtaClient.connect();
+          rtaClient.say(channel, 'e7-RTA-Client: connected');
+          break;
+        case '!reset':
+          rtaClient.say(channel, 'e7-RTA-Client: quitting');
+          rtaClient.quit();
+          break;
+        case '!startDraft':
+          rtaClient.say(channel, 'Type !pick to select a unit');
+          startPicks(rtaClient);
+          break;
+        case '!next':
+          clearPicks(rtaClient);
+          break;
+        case '!endDraft':
+          clearTimeout();
+          break;
       }
     }
   });
 }
-async function startDraft(chatClient: ChatClient) {
-  await chatClient.say(channel, 'Starting Draft');
+async function startPicks(chatClient: ChatClient) {
+  await chatClient.say(channel, 'Picks OPEN');
 
   chatClient.onMessage(async (channel, user, message) => {
     if (message.startsWith('!pick')) {
       if (!users.has(user)) {
         const pick = message.slice(5).trim();
-        await chatClient.say(channel, pick);
 
-        draft.set(pick, draft.get(pick) || 0 + 1);
-        users.set(user, true);
-
-        await chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
-        await chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
+        if (nameChecker.checkCanonicalName(pick) != '') {
+          draft.set(pick, draft.get(pick) || 0 + 1);
+          users.set(user, true);
+        } else {
+          await chatClient.say(channel, `${pick} is not recognized`);
+        }
       } else {
         await chatClient.say(channel, `${user} has already picked`);
-        await chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
-        await chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
       }
     }
   });
 }
-async function endDraft(chatClient: ChatClient) {
+async function clearPicks(chatClient: ChatClient) {
   const winner = [...draft.entries()].reduce((previous, current) => (current[1] > previous[1] ? current : previous));
-  await chatClient.say(channel, 'Draft Ended. Clearing draft and users');
-  await chatClient.say(channel, `The winner is ${winner[0]} with ${winner[1]} votes!`);
+  await chatClient.say(channel, `The winner was ${winner[0]} with ${winner[1]} votes!`);
   draft.clear();
   users.clear();
-  await chatClient.say(channel, `Draft is at: ${util.inspect(draft)}`);
-  await chatClient.say(channel, `Users are at: ${util.inspect(users)}`);
 }
 async function main(code: string) {
   const response = await fetch(
@@ -104,7 +112,8 @@ async function main(code: string) {
   const tokenData = await response.json();
   const authProvider = await getAuthProvider(clientId, tokenData);
   const chatClient = new ChatClient(authProvider, { channels: [channel] });
-  createDrafterClient(chatClient);
+  const rtaClient = new ChatClient(authProvider, { channels: [channel] });
+  createDrafterClient(chatClient, rtaClient);
 }
 
 app.get('/auth', function (req: express.Request, res: express.Response) {

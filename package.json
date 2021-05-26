@@ -11,7 +11,7 @@
   },
   "engines": {
     "node": "16.x",
-    "npm": "7.x"
+    "npm": "6.x"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "node-fetch": "^2.6.1",
     "open": "^8.2.0",
+    "pg": "^8.6.0",
     "ts-node": "^10.0.0",
     "twitch-auth": "^4.5.5",
     "twitch-chat-client": "^4.5.5",
