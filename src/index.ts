@@ -72,7 +72,7 @@ async function createDrafterClient(chatClient: ChatClient, rtaClient: ChatClient
           clearPicks(rtaClient);
           break;
         case '!endDraft':
-          clearTimeout();
+          clearPicks(rtaClient);
           break;
       }
     }

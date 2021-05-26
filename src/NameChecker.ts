@@ -12,6 +12,7 @@ class NameChecker {
     this.heroList = names;
   }
   checkCanonicalName(name: string): string {
+    name = name.toLowerCase();
     return this.heroList.includes(name) ? name : '';
   }
 }
