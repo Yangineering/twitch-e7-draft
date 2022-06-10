@@ -7,7 +7,9 @@ steps:
             - .buildkite/docker-compose.yml
   - wait
   - commands: 
-    - "ls"
+    - "npm ci"
+    - "npm run lint"
+    - "npm run test"
     plugins:
     - docker-login#v2.1.0:
         username: endqwerty
