@@ -3,7 +3,6 @@ services:
   node:
     image: "node:18"
     user: "nobody"
-    userns: host
     working_dir: /home/node/app
     environment:
       - NODE_ENV=development
