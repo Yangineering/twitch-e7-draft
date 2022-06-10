@@ -1,6 +1,4 @@
 steps:
-  - command: "buildkite-agent pipeline upload"
-    label: ":pipeline:"
   - plugins:
     - gencer/cache#v2.4.10:
         id: node # or node-16
