@@ -3,7 +3,7 @@ import { StaticAuthProvider, RefreshableAuthProvider, AuthProvider } from 'twitc
 import dotenv from 'dotenv';
 import express from 'express';
 import fetch from 'node-fetch';
-import NameChecker from './NameChecker';
+import NameChecker from './nameChecker';
 
 dotenv.config();
 
