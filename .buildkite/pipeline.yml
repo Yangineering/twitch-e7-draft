@@ -13,6 +13,7 @@ steps:
           env:
             - BUILDKITE_BUILD_NUMBER
             - BUILDKITE_PULL_REQUEST
+          run: node
     - gencer/cache#v2.4.10:
         id: node # or node-16
         backend: rsync # Optional. Default `backend` is already set to `tarball`
