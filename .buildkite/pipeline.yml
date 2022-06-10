@@ -14,7 +14,6 @@ steps:
             - BUILDKITE_BUILD_NUMBER
             - BUILDKITE_PULL_REQUEST
           user: nobody
-          userns_mode: "host"
           run: node
     - gencer/cache#v2.4.10:
         id: node # or node-16
