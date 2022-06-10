@@ -20,9 +20,9 @@
   "author": "Daniel Yang",
   "license": "LICENSE",
   "bugs": {
-    "url": "https://github.com/endqwerty/twitch-e7-draft/issues"
+    "url": "https://github.com/YangCastle/twitch-e7-draft/issues"
   },
-  "homepage": "https://github.com/endqwerty/twitch-e7-draft#readme",
+  "homepage": "https://github.com/YangCastle/twitch-e7-draft#readme",
   "dependencies": {
     "@types/express": "^4.17.11",
     "dotenv": "^10.0.0",
