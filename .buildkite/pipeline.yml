@@ -1,4 +1,5 @@
 steps:
+  - command: "nvm use"
   - command: "npm ci"
     plugins:
     - gencer/cache#v2.4.10:
