@@ -1,4 +1,9 @@
 steps:
+  - label: ":docker: Build"
+    plugins:
+      - docker-compose#v3.9.0:
+          build: node
+  - wait
   - commands: 
     - "npm ci"
     - "npm run lint"
