@@ -1,11 +1,4 @@
 steps:
-  - label: ":docker: Build"
-    plugins:
-      - docker-compose#v3.9.0:
-          build: node
-          config:
-            - .buildkite/docker-compose.yml
-  - wait
   - commands: 
     - "npm ci"
     - "npm run lint"
