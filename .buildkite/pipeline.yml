@@ -1,5 +1,6 @@
 steps:
-  - plugins:
+  - command: "npm ci"
+    plugins:
     - gencer/cache#v2.4.10:
         id: node # or node-16
         backend: rsync # Optional. Default `backend` is already set to `tarball`
@@ -11,4 +12,3 @@ steps:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.10+
         paths:
           - node_modules
-  - command: "npm ci"
