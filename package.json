@@ -10,12 +10,12 @@
     "prepare": "husky install"
   },
   "engines": {
-    "node": "16.x",
+    "node": "18.x",
     "npm": "8.x"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/endqwerty/twitch-e7-draft.git"
+    "url": "git+https://github.com/YangCastle/twitch-e7-draft.git"
   },
   "author": "Daniel Yang",
   "license": "LICENSE",
